@@ -1,22 +1,31 @@
 import Phaser from 'phaser'
-
 export default class nivel1 extends Phaser.Scene{
-    constructor(){
+    constructor(){ 
         super("nivel1");
     }
+    declare var 
     preload(){
-
-        
-
+        this.load.image("bote", "/images/bote.png");
+        this.load.tilemapTiledJSON("nivel1", "/assets/nivel1.json");
+        this.load.image("tileset", "/assets/tileset.png");
     }
-    
+
     create(){
-        var background1 = this.add.image(0,0,"game1").setOrigin(0,0)
+        
+        var rio = this.make.tilemap({ key: "nivel1"})
+        var tileset = rio.addTilesetImage("tileset", "tileset")
+        var layer = rio.createLayer("terreno", tileset , 0,0)
+
+        //var tierra = rio.createStaticLayer("terreno", tileset, 0,0)
+        layer.setCollisionByProperty({borde: true})
         console.log("carga background")
         
         //barco
-        var barco = this.add.image
-        var tuerca = this.add.image(1850, 50, "tuerca").setScale(0.15)
+        var barco = this.physics.add.sprite(200, 500,"bote").setAngle(90);
+
+        this.physics.add.collider(barco, layer);
+
+        const tuerca = this.add.image(1850, 50, "tuerca").setScale(0.15)
         .setInteractive()
         .on('pointerdown', () => this.scene.run("menu_ingame"), this.physics.pause())
         
@@ -24,27 +33,27 @@ export default class nivel1 extends Phaser.Scene{
         //texto_tiempo = this.add.text(1300,30, "Tiempo restante: ",{fontFamily: "Courier_New",fontSize: 48})
         //tiempo = this.add.text(1650,30, "0",{fontFamily: "Courier_New",fontSize: 48})
 
-        var texto_puntuacion = this.add.text(800,30, "Puntuacion: ",{fontFamily: "Courier_New",fontSize: 48})
-        var puntuacion = this.add.text(1050,30, "0",{fontFamily: "Courier_New",fontSize: 48})
+        const texto_puntuacion = this.add.text(800,30, "Puntuacion: ",{fontFamily: "Courier_New", fontSize: 48})
+        const puntuacion = this.add.text(1050,30, "0",{fontFamily: "Courier_New", fontSize: 48})
 
-        var initialTime = 50
         //texto_tiempo = this.time.addEvent({ delay: 1000, callback: this.onSecond, callbackScope: this, loop: true });
         var timeText = this.add.text(1300, 30, 'Tiempo restante: ', { fontFamily: 'Courier_New',fontSize: 48});
     }
     
-    onSecond(){
-        //timeText.setText('Tiempo restante: ' + initialTime);
-        var initialTime = initialTime - 1;
-        if (initialTime === -1){
-            this.scene.start('Gameover');
-        }
-    }
+    // onSecond(){
+    //     //timeText.setText('Tiempo restante: ' + initialTime);
+    //     this.initialTime = this.initialTime - 1;
+    //     if (this.initialTime === -1){
+    //         this.scene.start('Gameover');
+    //     }
+    // }
 
     
     update(){
-
-
-        
+        if (this.input.activePointer.isDown)
+    {
+        //barco.setVelocityX(100);
+        console.log("asd")
     }
-
+    }
 }
