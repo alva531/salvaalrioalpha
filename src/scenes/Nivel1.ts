@@ -1,9 +1,16 @@
+var barco;
+var rio;
+var tileset;
+var layer;
+var cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+var debug;
+var target = new Phaser.Math.Vector2();
+var distanceText;
 import Phaser from 'phaser'
 export default class nivel1 extends Phaser.Scene{
     constructor(){ 
         super("nivel1");
     }
-    declare var 
     preload(){
         this.load.image("bote", "/images/bote.png");
         this.load.tilemapTiledJSON("nivel1", "/assets/nivel1.json");
@@ -11,19 +18,35 @@ export default class nivel1 extends Phaser.Scene{
     }
 
     create(){
-        
-        var rio = this.make.tilemap({ key: "nivel1"})
-        var tileset = rio.addTilesetImage("tileset", "tileset")
-        var layer = rio.createLayer("terreno", tileset , 0,0)
-
-        //var tierra = rio.createStaticLayer("terreno", tileset, 0,0)
+        //cursores
+        cursors = this.input.keyboard.createCursorKeys()
+        //mapa
+        rio = this.make.tilemap({ key: "nivel1"})
+        tileset = rio.addTilesetImage("tileset", "tileset")
+        layer = rio.createLayer("terreno", tileset , 0,0)
         layer.setCollisionByProperty({borde: true})
         console.log("carga background")
         
         //barco
-        var barco = this.physics.add.sprite(200, 500,"bote").setAngle(90);
+        barco = this.physics.add.image(200, 500,"bote");
 
-        this.physics.add.collider(barco, layer);
+        
+        debug = this.add.graphics();
+
+        this.input.on('pointerdown',  (pointer) => {
+    
+            target.x = pointer.x;
+            target.y = pointer.y;
+            
+            // Move at 200 px/s:
+            this.physics.moveToObject(barco, target, 200);
+    
+            debug.clear().lineStyle(1, 0x00ff00);
+            debug.lineBetween(0, target.y, 800, target.y);
+            debug.lineBetween(target.x, 0, target.x, 600);
+    
+        }, this);
+        //this.physics.add.collider(barco, layer);
 
         const tuerca = this.add.image(1850, 50, "tuerca").setScale(0.15)
         .setInteractive()
@@ -50,9 +73,9 @@ export default class nivel1 extends Phaser.Scene{
 
     
     update(){
-        if (this.input.activePointer.isDown)
+        if (cursors.up.isDown)
     {
-        //barco.setVelocityX(100);
+        barco.setVelocityY(100);
         console.log("asd")
     }
     }
